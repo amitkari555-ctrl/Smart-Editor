@@ -1,0 +1,2 @@
+# Smart-Editor
+Image crop 
