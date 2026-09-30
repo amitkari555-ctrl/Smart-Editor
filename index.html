@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Smart Crop</title>
+<style>
+*{box-sizing:border-box}
+:root{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+body{margin:0;background:#f3f5f8;color:#17202a}
+
+/* Header Design */
+header{
+  background:linear-gradient(135deg, #090d16 0%, #1e1b4b 50%, #0f172a 100%);
+  color:#fff;
+  text-align:center;
+  padding:22px 16px 18px;
+}
+header h1{
+  margin:0;
+  font-size:28px;
+  font-weight:800;
+  letter-spacing:-0.5px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+.brand-icon{
+  font-size:26px;
+  filter:drop-shadow(0 2px 10px rgba(56,189,248,0.6));
+}
+.brand-text{
+  background:linear-gradient(90deg, #38bdf8, #818cf8, #c084fc);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 18px rgba(129,140,248,0.35));
+}
+.header-tags{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:6px;
+  margin-top:12px;
+}
+.header-badge{
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.14);
+  color:#e2e8f0;
+  font-size:11px;
+  font-weight:600;
+  padding:4px 9px;
+  border-radius:20px;
+  letter-spacing:0.4px;
+}
+
+/* --- लाल लाइन वाली जगह के लिए रनिंग टेक्स्ट स्ट्रिप (Marquee) --- */
+.ticker-wrap{
+  width:100%;
+  overflow:hidden;
+  background:linear-gradient(90deg, #0b1120 0%, #1e1b4b 50%, #0b1120 100%);
+  border-top:1px solid rgba(255,255,255,0.08);
+  border-bottom:1px solid rgba(56,189,248,0.3);
+  padding:8px 0;
+  box-shadow:0 4px 12px rgba(0,0,0,0.15);
+}
+.ticker-content{
+  display:inline-flex;
+  white-space:nowrap;
+  animation:runTicker 18s linear infinite;
+  gap:20px;
+}
+.ticker-item{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:0.4px;
+  color:#e0e7ff;
+}
+.ticker-en{
+  background:linear-gradient(90deg, #38bdf8, #818cf8);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.ticker-hi{
+  background:linear-gradient(90deg, #f472b6, #c084fc);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.ticker-sep{
+  color:#64748b;
+  font-size:11px;
+}
+@keyframes runTicker{
+  0%{transform:translateX(0)}
+  100%{transform:translateX(-50%)}
+}
+
+.container{max-width:1050px;margin:auto;padding:16px}
+.card{background:#fff;border-radius:16px;padding:17px;margin-bottom:15px;box-shadow:0 4px 18px rgba(0,0,0,.07)}
+h2{font-size:18px;margin:0 0 14px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media(max-width:680px){.grid{grid-template-columns:1fr}}
+label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
+input,select,button{width:100%;min-height:44px;border:1px solid #d1d5db;border-radius:9px;padding:10px 12px;font-size:15px;background:#fff}
+input[type=range]{padding:0}
+button{border:0;font-weight:700;cursor:pointer}
+button:disabled{opacity:.5;cursor:not-allowed}
+.primary{background:#2563eb;color:#fff}.success{background:#16a34a;color:#fff}.dark{background:#111827;color:#fff}.gray{background:#e5e7eb;color:#111827}
+.drop{position:relative;display:block;border:2px dashed #94a3b8;border-radius:14px;padding:32px 14px;text-align:center;background:#f8fafc;cursor:pointer;overflow:hidden;touch-action:manipulation}.drop input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:5}.drop strong,.drop span{position:relative;z-index:1;pointer-events:none}
+.drop strong{display:block;font-size:17px}.drop span{display:block;margin-top:5px;color:#64748b;font-size:13px}
+.info{background:#eff6ff;border-left:4px solid #2563eb;padding:11px;border-radius:7px;font-size:13px;line-height:1.55}
+.warning{background:#fff7ed;border-left:4px solid #f97316;padding:11px;border-radius:7px;font-size:13px;line-height:1.55}
+.result{background:#f8fafc;border-radius:10px;padding:12px;font-size:14px;line-height:1.75}
+.small{font-size:12px;color:#64748b;margin-top:6px}
+.checkbox{display:flex;align-items:center;gap:8px;margin-top:11px}.checkbox input{width:auto;min-height:auto}
+.crop-shell{background:#090d13;border-radius:14px;padding:10px;overflow:hidden}
+#cropCanvas{display:block;width:100%;height:min(70vh,560px);min-height:300px;background:#111827;border-radius:10px;touch-action:none;user-select:none;cursor:grab}
+#cropCanvas:active{cursor:grabbing}
+.crop-help{text-align:center;color:#cbd5e1;font-size:12px;padding:7px 3px 1px}
+.control{display:flex;align-items:center;gap:10px}.control strong{min-width:55px;text-align:right}
+.actions{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+@media(max-width:650px){.actions{grid-template-columns:repeat(2,1fr)}}
+.preview-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:680px){.preview-grid{grid-template-columns:1fr}}
+.preview{min-height:230px;background:#eef2f7;border-radius:12px;display:flex;align-items:center;justify-content:center;padding:10px;overflow:hidden}
+.preview img{max-width:100%;max-height:350px;object-fit:contain}
+.placeholder{color:#64748b;font-size:14px;text-align:center}
+footer{text-align:center;padding:24px;color:#64748b;font-size:12px}
+.invalid{border-color:#dc2626!important;background:#fff7f7}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>
+    <span class="brand-icon">⚡</span>
+    <span class="brand-text">Smart Crop</span>
+  </h1>
+  <div class="header-tags">
+    <span class="header-badge">CM</span>
+    <span class="header-badge">MM</span>
+    <span class="header-badge">INCH</span>
+    <span class="header-badge">PIXEL</span>
+    <span class="header-badge">DPI</span>
+    <span class="header-badge">KB / MB</span>
+    <span class="header-badge">Live Crop</span>
+  </div>
+</header>
+
+<!-- लाल लाइन की जगह पर चलती हुई टेक्स्ट पट्टी -->
+<div class="ticker-wrap">
+  <div class="ticker-content">
+    <div class="ticker-item">
+      <span>🚗</span>
+      <span class="ticker-en">Welcome to Smart Crop</span>
+      <span class="ticker-sep">•</span>
+      <span class="ticker-hi">आपका स्वागत है Smart Crop में</span>
+      <span>✨</span>
+    </div>
+    <div class="ticker-item">
+      <span>⚡</span>
+      <span class="ticker-en">Welcome to Smart Crop</span>
+      <span class="ticker-sep">•</span>
+      <span class="ticker-hi">आपका स्वागत है Smart Crop में</span>
+      <span>✨</span>
+    </div>
+    <div class="ticker-item">
+      <span>🚗</span>
+      <span class="ticker-en">Welcome to Smart Crop</span>
+      <span class="ticker-sep">•</span>
+      <span class="ticker-hi">आपका स्वागत है Smart Crop में</span>
+      <span>✨</span>
+    </div>
+    <div class="ticker-item">
+      <span>⚡</span>
+      <span class="ticker-en">Welcome to Smart Crop</span>
+      <span class="ticker-sep">•</span>
+      <span class="ticker-hi">आपका स्वागत है Smart Crop में</span>
+      <span>✨</span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+<div class="card">
+  <h2>1. Photo Upload</h2>
+  <label class="drop" id="dropZone" for="fileInput">
+    <strong>📁 Photo चुनें या यहाँ Drop करें</strong>
+    <span>JPG • JPEG • PNG • WEBP</span>
+    <input id="fileInput" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
+  </label>
+  <div id="fileInfo" class="small"></div>
+</div>
+
+<div class="card">
+  <h2>2. Regulation / Preset</h2>
+  <div class="grid">
+    <div>
+      <label>Preset</label>
+      <select id="preset">
+        <option value="custom">Custom</option>
+        <option value="pan_nsdl_photo">PAN NSDL / Protean — Photo</option>
+        <option value="pan_nsdl_sign">PAN NSDL / Protean — Signature</option>
+        <option value="pan_uti_photo">PAN UTIITSL — Photo</option>
+        <option value="pan_uti_sign">PAN UTIITSL — Signature</option>
+        <option value="passport">Passport Photo — 35×45 mm</option>
+        <option value="visa">Visa Photo — 35×45 mm</option>
+        <option value="signature">Signature — Custom</option>
+      </select>
+    </div>
+    <div>
+      <label>Output Format</label>
+      <select id="format">
+        <option value="image/jpeg">JPG / JPEG</option>
+        <option value="image/png">PNG</option>
+        <option value="image/webp">WEBP</option>
+      </select>
+    </div>
+  </div>
+  <div id="presetInfo" class="info" style="margin-top:12px">Custom regulation.</div>
+</div>
+
+<div class="card">
+  <h2>3. Exact Width × Height</h2>
+  <div class="grid">
+    <div>
+      <label>Unit</label>
+      <select id="unit">
+        <option value="px">Pixels (PX)</option>
+        <option value="cm">Centimeters (CM)</option>
+        <option value="mm">Millimeters (MM)</option>
+        <option value="in">Inches (INCH)</option>
+      </select>
+    </div>
+    <div>
+      <label>DPI / PPI</label>
+      <input id="dpi" type="number" min="1" step="1" value="300">
+    </div>
+    <div>
+      <label>Width</label>
+      <input id="width" type="number" min="0.01" step="0.01" value="213" inputmode="decimal">
+    </div>
+    <div>
+      <label>Height</label>
+      <input id="height" type="number" min="0.01" step="0.01" value="213" inputmode="decimal">
+    </div>
+  </div>
+  <div class="checkbox">
+    <input id="lockRatio" type="checkbox">
+    <label for="lockRatio">Width/Height ratio lock</label>
+  </div>
+  <div id="pixelResult" class="result" style="margin-top:12px"></div>
+</div>
+
+<div class="card">
+  <h2>4. Live Crop & Adjust</h2>
+  <div class="info">
+    <b>फोटो crop box के अंदर दिखाई देगी।</b><br>
+    उंगली/माउस से photo को drag करें। Zoom slider से photo को बड़ा/छोटा करें।
+    White frame के अंदर दिखने वाला हिस्सा final image में जाएगा।
+  </div>
+  <div class="crop-shell" style="margin-top:12px">
+    <canvas id="cropCanvas"></canvas>
+    <div class="crop-help">👆 Photo Drag • 🔍 Zoom • ⛶ Crop frame के किनारे/कोने Drag करके खुद Size Adjust करें</div>
+    <div class="checkbox" style="margin:8px 4px 2px;color:#e2e8f0">
+      <input id="freeCrop" type="checkbox" checked>
+      <label for="freeCrop" style="color:#e2e8f0">Free Crop Frame — Width/Height ratio को manually बदलने दें</label>
+    </div>
+  </div>
+
+  <div style="margin-top:13px">
+    <label>🔍 Zoom</label>
+    <div class="control">
+      <input id="zoom" type="range" min="0.10" max="5" step="0.01" value="1">
+      <strong id="zoomValue">100%</strong>
+    </div>
+  </div>
+
+  <div class="actions" style="margin-top:12px">
+    <button id="fitBtn" class="gray">↔️ Fit</button>
+    <button id="centerBtn" class="gray">🎯 Center</button>
+    <button id="resetBtn" class="gray">🔄 Reset</button>
+    <button id="generateBtn" class="primary" disabled>✂️ Generate</button>
+  </div>
+</div>
+
+<div class="card">
+  <h2>5. File Size Regulation</h2>
+  <div class="grid">
+    <div>
+      <label>Target Mode</label>
+      <select id="sizeMode">
+        <option value="none">No Target</option>
+        <option value="max">Maximum Size</option>
+        <option value="range">Minimum + Maximum</option>
+      </select>
+    </div>
+    <div>
+      <label>Size Unit</label>
+      <select id="sizeUnit">
+        <option value="KB">KB</option>
+        <option value="MB">MB</option>
+      </select>
+    </div>
+    <div>
+      <label>Minimum</label>
+      <input id="minSize" type="number" min="0" step="0.01" value="20">
+    </div>
+    <div>
+      <label>Maximum</label>
+      <input id="maxSize" type="number" min="0.01" step="0.01" value="50">
+    </div>
+  </div>
+  <div class="small">Compression target है; exact minimum size हर image पर mathematically possible नहीं होता।</div>
+</div>
+
+<div class="card">
+  <h2>6. Quality</h2>
+  <div class="control">
+    <input id="quality" type="range" min="10" max="100" value="90">
+    <strong id="qualityValue">90%</strong>
+  </div>
+</div>
+
+<div class="card">
+  <h2>7. Preview</h2>
+  <div class="preview-grid">
+    <div>
+      <label>Original</label>
+      <div class="preview">
+        <div id="originalPlaceholder" class="placeholder">Upload an image</div>
+        <img id="originalPreview" hidden alt="Original">
+      </div>
+    </div>
+    <div>
+      <label>Final</label>
+      <div class="preview">
+        <div id="finalPlaceholder" class="placeholder">Generate image</div>
+        <img id="finalPreview" hidden alt="Final">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>8. Download</h2>
+  <div class="actions">
+    <button id="downloadBtn" class="success" disabled>⬇️ Download</button>
+    <button id="downloadAgainBtn" class="dark" disabled>📥 Save Again</button>
+    <button id="clearBtn" class="gray">🧹 Clear</button>
+    <button id="resetAllBtn" class="gray">🔄 Reset All</button>
+  </div>
+</div>
+
+<div class="card">
+  <h2>9. Output Details</h2>
+  <div id="outputInfo" class="result">No output generated.</div>
+</div>
+
+<div class="warning">
+  ⚠️ PAN/Passport/Visa/other applications की exact current requirements संबंधित official portal से verify करें।
+  इस app के presets editable हैं।
+</div>
+
+</div>
+
+<footer>Smart Crop • Browser में local processing</footer>
+
+<script>
+"use strict";
+
+const $ = id => document.getElementById(id);
+
+const presets = {
+  pan_nsdl_photo:{unit:"cm",width:3.5,height:2.5,dpi:200,min:20,max:50,info:"PAN NSDL / Protean photo: 3.5 × 2.5 cm @ 200 DPI; supplied 20–50 KB rule."},
+  pan_nsdl_sign:{unit:"cm",width:4.5,height:2,dpi:200,min:10,max:50,info:"PAN NSDL / Protean signature: 4.5 × 2.0 cm; supplied 10–50 KB rule."},
+  pan_uti_photo:{unit:"px",width:213,height:213,dpi:300,min:0,max:30,info:"PAN UTIITSL photo: 213 × 213 px @ 300 DPI; supplied under 30 KB rule."},
+  pan_uti_sign:{unit:"px",width:400,height:200,dpi:600,min:0,max:60,info:"PAN UTIITSL signature: 400 × 200 px @ 600 DPI; supplied under 60 KB rule."},
+  passport:{unit:"mm",width:35,height:45,dpi:300,min:0,max:0,info:"Generic 35 × 45 mm passport preset. Verify the destination authority."},
+  visa:{unit:"mm",width:35,height:45,dpi:300,min:0,max:0,info:"Generic 35 × 45 mm visa preset. Verify the destination authority."},
+  signature:{unit:"px",width:400,height:200,dpi:300,min:0,max:60,info:"Generic 400 × 200 px signature preset; adjust to the application requirement."}
+};
+
+let sourceImage = null;
+let sourceFile = null;
+let finalBlob = null;
+let finalURL = null;
+
+const canvas = $("cropCanvas");
+const ctx = canvas.getContext("2d");
+let dpr = 1;
+let viewW = 0, viewH = 0;
+
+let imgX = 0, imgY = 0;
+let zoomFactor = 1;
+let baseScale = 1;
+
+let dragging = false;
+let pointerId = null;
+let downX = 0, downY = 0, startX = 0, startY = 0;
+
+let pinchStartDistance = 0;
+let pinchStartZoom = 1;
+const activePointers = new Map();
+
+let frameW = 0, frameH = 0;
+let frameInitialized = false;
+let resizeHandle = null;
+let resizeStart = null;
+
+function pxFromUnit(value, unit, dpi){
+  const v = Number(value) || 0;
+  const d = Number(dpi) || 300;
+  if(unit === "px") return Math.max(1, Math.round(v));
+  if(unit === "in") return Math.max(1, Math.round(v * d));
+  if(unit === "cm") return Math.max(1, Math.round(v * d / 2.54));
+  if(unit === "mm") return Math.max(1, Math.round(v * d / 25.4));
+  return Math.max(1, Math.round(v));
+}
+
+function getTarget(){
+  const unit = $("unit").value;
+  const dpi = Number($("dpi").value) || 300;
+  const width = Number($("width").value);
+  const height = Number($("height").value);
+  return {
+    width:pxFromUnit(width,unit,dpi),
+    height:pxFromUnit(height,unit,dpi),
+    dpi
+  };
+}
+
+function updateTargetInfo(){
+  const unit = $("unit").value;
+  const dpi = Number($("dpi").value) || 300;
+  const w = Number($("width").value);
+  const h = Number($("height").value);
+
+  if(!(w > 0) || !(h > 0) || !(dpi > 0)){
+    $("pixelResult").textContent = "Valid Width, Height और DPI डालें।";
+    drawEditor();
+    return;
+  }
+
+  const t = getTarget();
+  $("pixelResult").innerHTML =
+    `<b>Pixel output:</b> ${t.width} × ${t.height} px<br>
+     <b>Resolution:</b> ${dpi} DPI<br>
+     <b>Ratio:</b> ${(w/h).toFixed(4)} : 1`;
+
+  resetFrameToRatio();
+  if(sourceImage) fitImage();
+  else drawEditor();
+}
+
+function resizeCanvas(){
+  const rect = canvas.getBoundingClientRect();
+  viewW = Math.max(1, rect.width);
+  viewH = Math.max(1, rect.height);
+  dpr = Math.min(window.devicePixelRatio || 1, 3);
+  canvas.width = Math.round(viewW*dpr);
+  canvas.height = Math.round(viewH*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  drawEditor();
+}
+
+function cropBox(){
+  const t = getTarget();
+  const ratio = t.width/t.height;
+  const maxW = viewW * 0.90;
+  const maxH = viewH * 0.86;
+
+  if(!frameInitialized || frameW <= 0 || frameH <= 0){
+    let w,h;
+    if(maxW/maxH > ratio){ h=maxH; w=h*ratio; }
+    else { w=maxW; h=w/ratio; }
+    frameW=w; frameH=h; frameInitialized=true;
+  }
+
+  frameW=Math.min(frameW,maxW);
+  frameH=Math.min(frameH,maxH);
+
+  return {x:(viewW-frameW)/2,y:(viewH-frameH)/2,w:frameW,h:frameH};
+}
+
+function resetFrameToRatio(){
+  const t=getTarget();
+  const ratio=t.width/t.height;
+  const maxW=viewW*.90, maxH=viewH*.86;
+  let w,h;
+  if(maxW/maxH>ratio){h=maxH;w=h*ratio;}
+  else{w=maxW;h=w/ratio;}
+  frameW=w; frameH=h; frameInitialized=true;
+}
+
+function fitImage(){
+  if(!sourceImage){ drawEditor(); return; }
+  const b = cropBox();
+  baseScale = Math.max(b.w/sourceImage.width, b.h/sourceImage.height);
+  zoomFactor = 1;
+  $("zoom").value = "1";
+  imgX = viewW/2;
+  imgY = viewH/2;
+  updateZoomText();
+  drawEditor();
+}
+
+function centerImage(){
+  imgX = viewW/2;
+  imgY = viewH/2;
+  drawEditor();
+}
+
+function resetImage(){
+  fitImage();
+}
+
+function clampImagePosition(){
+  if(!sourceImage) return;
+  const b = cropBox();
+  const scale = baseScale * zoomFactor;
+  const iw = sourceImage.width*scale;
+  const ih = sourceImage.height*scale;
+
+  const minX = b.x + b.w - iw/2;
+  const maxX = b.x + iw/2;
+  const minY = b.y + b.h - ih/2;
+  const maxY = b.y + ih/2;
+
+  if(iw >= b.w) imgX = Math.min(maxX, Math.max(minX, imgX));
+  else imgX = b.x+b.w/2;
+
+  if(ih >= b.h) imgY = Math.min(maxY, Math.max(minY, imgY));
+  else imgY = b.y+b.h/2;
+}
+
+function drawEditor(){
+  if(!viewW || !viewH) return;
+
+  ctx.clearRect(0,0,viewW,viewH);
+  ctx.fillStyle = "#111827";
+  ctx.fillRect(0,0,viewW,viewH);
+
+  const b = cropBox();
+
+  if(sourceImage){
+    const scale = baseScale*zoomFactor;
+    const iw = sourceImage.width*scale;
+    const ih = sourceImage.height*scale;
+    ctx.drawImage(sourceImage,imgX-iw/2,imgY-ih/2,iw,ih);
+
+    ctx.fillStyle = "rgba(0,0,0,.58)";
+    ctx.fillRect(0,0,viewW,b.y);
+    ctx.fillRect(0,b.y+b.h,viewW,viewH-(b.y+b.h));
+    ctx.fillRect(0,b.y,b.x,b.h);
+    ctx.fillRect(b.x+b.w,b.y,viewW-(b.x+b.w),b.h);
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(b.x,b.y,b.w,b.h);
+    ctx.clip();
+    ctx.strokeStyle = "rgba(255,255,255,.48)";
+    ctx.lineWidth = 1;
+    for(let i=1;i<3;i++){
+      const gx=b.x+b.w*i/3;
+      const gy=b.y+b.h*i/3;
+      ctx.beginPath();ctx.moveTo(gx,b.y);ctx.lineTo(gx,b.y+b.h);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(b.x,gy);ctx.lineTo(b.x+b.w,gy);ctx.stroke();
+    }
+    ctx.restore();
+
+    ctx.strokeStyle="#fff";
+    ctx.lineWidth=3;
+    ctx.strokeRect(b.x+1.5,b.y+1.5,b.w-3,b.h-3);
+
+    ctx.fillStyle="#fff";
+    const s=10;
+    [[b.x,b.y],[b.x+b.w/2,b.y],[b.x+b.w,b.y],
+     [b.x,b.y+b.h/2],[b.x+b.w,b.y+b.h/2],
+     [b.x,b.y+b.h],[b.x+b.w/2,b.y+b.h],[b.x+b.w,b.y+b.h]]
+     .forEach(p=>ctx.fillRect(p[0]-s/2,p[1]-s/2,s,s));
+  }else{
+    ctx.strokeStyle="rgba(255,255,255,.18)";
+    ctx.lineWidth=1;
+    ctx.strokeRect(b.x,b.y,b.w,b.h);
+    ctx.fillStyle="#94a3b8";
+    ctx.font="15px system-ui";
+    ctx.textAlign="center";
+    ctx.fillText("Photo upload करें",viewW/2,viewH/2);
+  }
+}
+
+function updateZoomText(){
+  $("zoomValue").textContent = Math.round(Number($("zoom").value)*100)+"%";
+}
+
+function setZoom(v){
+  const z = Math.min(5,Math.max(.1,Number(v)||1));
+  zoomFactor=z;
+  $("zoom").value=z;
+  clampImagePosition();
+  updateZoomText();
+  drawEditor();
+}
+
+function loadFile(file){
+  if(!file || !file.type.startsWith("image/")){
+    alert("कृपया valid image file चुनें।");
+    return;
+  }
+  sourceFile=file;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const img=new Image();
+    img.onload=()=>{
+      sourceImage=img;
+      $("cropImageDummy")?.remove();
+      $("originalPreview").src=e.target.result;
+      $("originalPreview").hidden=false;
+      $("originalPlaceholder").hidden=true;
+      $("fileInfo").innerHTML =
+        `Original: <b>${img.naturalWidth} × ${img.naturalHeight}px</b> • ${(file.size/1024).toFixed(2)} KB`;
+      $("generateBtn").disabled=false;
+      fitImage();
+    };
+    img.onerror=()=>alert("Image load नहीं हो सकी।");
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+$("fileInput").addEventListener("click",()=>{
+  $("fileInput").value="";
+});
+$("fileInput").addEventListener("change",e=>{
+  const f=e.target.files && e.target.files[0];
+  if(f) loadFile(f);
+});
+$("dropZone").addEventListener("dragover",e=>{e.preventDefault(); e.dataTransfer.dropEffect="copy";});
+$("dropZone").addEventListener("drop",e=>{
+  e.preventDefault();
+  const f=e.dataTransfer.files[0];
+  if(f) loadFile(f);
+});
+
+["unit","dpi","width","height"].forEach(id=>{
+  $(id).addEventListener("input",()=>{
+    const el=$(id);
+    if(el.value !== "" && Number(el.value)<0) el.value="";
+    updateTargetInfo();
+  });
+});
+
+$("width").addEventListener("input",()=>{
+  if(!$("lockRatio").checked) return;
+  const ratio=Number($("width").dataset.ratio);
+  if(ratio>0){
+    const w=Number($("width").value);
+    if(w>0){
+      $("height").value=(w*ratio).toFixed(2).replace(/\.00$/,"");
+      updateTargetInfo();
+    }
+  }
+});
+
+$("height").addEventListener("input",()=>{
+  if(!$("lockRatio").checked) return;
+  const ratio=Number($("height").dataset.ratio);
+  if(ratio>0){
+    const h=Number($("height").value);
+    if(h>0){
+      $("width").value=(h*ratio).toFixed(2).replace(/\.00$/,"");
+      updateTargetInfo();
+    }
+  }
+});
+
+$("lockRatio").addEventListener("change",()=>{
+  if($("lockRatio").checked){
+    const w=Number($("width").value),h=Number($("height").value);
+    if(w>0&&h>0){
+      $("width").dataset.ratio=(h/w).toString();
+      $("height").dataset.ratio=(w/h).toString();
+    }
+  }
+});
+
+$("freeCrop").addEventListener("change",()=>{
+  if(!$("freeCrop").checked) resetFrameToRatio();
+  drawEditor();
+});
+
+$("zoom").addEventListener("input",e=>setZoom(e.target.value));
+$("fitBtn").addEventListener("click",fitImage);
+$("centerBtn").addEventListener("click",centerImage);
+$("resetBtn").addEventListener("click",resetImage);
+
+function pointFromEvent(e){
+  const r=canvas.getBoundingClientRect();
+  return {x:e.clientX-r.left,y:e.clientY-r.top};
+}
+
+function getResizeHandle(p,b){
+  const hit=18;
+  const near=(x,y)=>Math.abs(p.x-x)<=hit && Math.abs(p.y-y)<=hit;
+  if(near(b.x,b.y)) return "nw";
+  if(near(b.x+b.w,b.y)) return "ne";
+  if(near(b.x,b.y+b.h)) return "sw";
+  if(near(b.x+b.w,b.y+b.h)) return "se";
+  if(near(b.x+b.w/2,b.y)) return "n";
+  if(near(b.x+b.w/2,b.y+b.h)) return "s";
+  if(near(b.x,b.y+b.h/2)) return "w";
+  if(near(b.x+b.w,b.y+b.h/2)) return "e";
+  return null;
+}
+
+function updateCanvasCursor(p){
+  if(!sourceImage){canvas.style.cursor="default";return;}
+  const b=cropBox(), h=getResizeHandle(p,b);
+  if(h==="nw"||h==="se") canvas.style.cursor="nwse-resize";
+  else if(h==="ne"||h==="sw") canvas.style.cursor="nesw-resize";
+  else if(h==="n"||h==="s") canvas.style.cursor="ns-resize";
+  else if(h==="e"||h==="w") canvas.style.cursor="ew-resize";
+  else canvas.style.cursor="grab";
+}
+
+canvas.addEventListener("pointermove",e=>{
+  if(!sourceImage) return;
+  if(activePointers.size>0) return;
+  updateCanvasCursor(pointFromEvent(e));
+});
+
+canvas.addEventListener("pointerdown",e=>{
+  if(!sourceImage)return;
+  const p=pointFromEvent(e);
+  activePointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  canvas.setPointerCapture(e.pointerId);
+
+  if(activePointers.size===1){
+    const b=cropBox();
+    const handle=getResizeHandle(p,b);
+
+    if(handle){
+      pointerId=e.pointerId;
+      resizeHandle=handle;
+      resizeStart={
+        x:p.x,y:p.y,
+        frameX:b.x,frameY:b.y,frameW:b.w,frameH:b.h,
+        ratio:b.w/b.h
+      };
+      dragging=false;
+    }else{
+      resizeHandle=null;
+      dragging=true; pointerId=e.pointerId;
+      downX=p.x;downY=p.y;startX=imgX;startY=imgY;
+    }
+  }else if(activePointers.size===2){
+    dragging=false;
+    resizeHandle=null;
+    const pts=[...activePointers.values()];
+    pinchStartDistance=Math.hypot(pts[0].x-pts[1].x,pts[0].y-pts[1].y);
+    pinchStartZoom=zoomFactor;
+  }
+});
+
+function resizeFrameFromPointer(p){
+  if(!resizeHandle || !resizeStart)return;
+  const s=resizeStart;
+  const minSize=45;
+  const maxW=viewW*.94;
+  const maxH=viewH*.90;
+  const free=$("freeCrop").checked;
+
+  let left=s.frameX, top=s.frameY, right=s.frameX+s.frameW, bottom=s.frameY+s.frameH;
+
+  if(resizeHandle.includes("w")) left=p.x;
+  if(resizeHandle.includes("e")) right=p.x;
+  if(resizeHandle.includes("n")) top=p.y;
+  if(resizeHandle.includes("s")) bottom=p.y;
+
+  if(resizeHandle.includes("w")) left=Math.min(left,right-minSize);
+  if(resizeHandle.includes("e")) right=Math.max(right,left+minSize);
+  if(resizeHandle.includes("n")) top=Math.min(top,bottom-minSize);
+  if(resizeHandle.includes("s")) bottom=Math.max(bottom,top+minSize);
+
+  left=Math.max(3,Math.min(left,viewW-3-minSize));
+  right=Math.max(left+minSize,Math.min(right,viewW-3));
+  top=Math.max(3,Math.min(top,viewH-3-minSize));
+  bottom=Math.max(top+minSize,Math.min(bottom,viewH-3));
+
+  if(!free){
+    const ratio=s.ratio;
+    let w=right-left, h=bottom-top;
+
+    if(resizeHandle==="e"||resizeHandle==="w"){
+      h=w/ratio;
+      top=s.frameY+(s.frameH-h)/2;
+      if(top<3){top=3;h=Math.min(h,s.frameY+s.frameH-3);}
+      if(top+h>viewH-3){h=viewH-3-top;w=h*ratio;}
+    }else if(resizeHandle==="n"||resizeHandle==="s"){
+      w=h*ratio;
+      left=s.frameX+(s.frameW-w)/2;
+      if(left<3){left=3;w=Math.min(w,s.frameX+s.frameW-3);}
+      if(left+w>viewW-3){w=viewW-3-left;h=w/ratio;}
+    }else{
+      if(resizeHandle==="se"){
+        w=Math.max(minSize,w); h=w/ratio;
+        if(top+h>viewH-3){h=viewH-3-top;w=h*ratio;}
+        right=left+w; bottom=top+h;
+      }else if(resizeHandle==="sw"){
+        w=Math.max(minSize,w); h=w/ratio;
+        if(top+h>viewH-3){h=viewH-3-top;w=h*ratio;}
+        left=right-w; bottom=top+h;
+      }else if(resizeHandle==="ne"){
+        w=Math.max(minSize,w); h=w/ratio;
+        if(top<3){top=3;h=bottom-top;w=h*ratio;}
+        left=right-w;
+      }else if(resizeHandle==="nw"){
+        w=Math.max(minSize,w); h=w/ratio;
+        left=right-w; top=bottom-h;
+        if(left<3){left=3;w=right-3;h=w/ratio;top=bottom-h;}
+        if(top<3){top=3;h=bottom-3;w=h*ratio;left=right-w;}
+      }
+    }
+    if(left<3){left=3;w=Math.min(w,viewW-6);h=w/ratio;}
+    if(top<3){top=3;h=Math.min(h,viewH-6);w=h*ratio;}
+    if(left+w>viewW-3){w=viewW-3-left;h=w/ratio;}
+    if(top+h>viewH-3){h=viewH-3-top;w=h*ratio;}
+
+    frameW=Math.max(minSize,w);
+    frameH=Math.max(minSize,h);
+    if(resizeHandle.includes("w")) left=right-frameW;
+    if(resizeHandle.includes("n")) top=bottom-frameH;
+    if(!resizeHandle.includes("w")&&!resizeHandle.includes("e")) left=s.frameX+(s.frameW-frameW)/2;
+    if(!resizeHandle.includes("n")&&!resizeHandle.includes("s")) top=s.frameY+(s.frameH-frameH)/2;
+  }else{
+    frameW=Math.max(minSize,right-left);
+    frameH=Math.max(minSize,bottom-top);
+  }
+
+  frameW=Math.min(frameW,maxW);
+  frameH=Math.min(frameH,maxH);
+
+  drawEditor();
+}
+
+canvas.addEventListener("pointermove",e=>{
+  if(!sourceImage)return;
+  if(activePointers.has(e.pointerId))activePointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+
+  if(activePointers.size===2){
+    const pts=[...activePointers.values()];
+    const dist=Math.hypot(pts[0].x-pts[1].x,pts[0].y-pts[1].y);
+    if(pinchStartDistance>0)setZoom(pinchStartZoom*(dist/pinchStartDistance));
+    return;
+  }
+
+  if(resizeHandle && e.pointerId===pointerId || resizeHandle && activePointers.size===1){
+    resizeFrameFromPointer(pointFromEvent(e));
+    return;
+  }
+
+  if(!dragging || e.pointerId!==pointerId)return;
+  const p=pointFromEvent(e);
+  imgX=startX+(p.x-downX);
+  imgY=startY+(p.y-downY);
+  clampImagePosition();
+  drawEditor();
+});
+
+function endPointer(e){
+  activePointers.delete(e.pointerId);
+  if(e.pointerId===pointerId)dragging=false;
+  if(activePointers.size<2)pinchStartDistance=0;
+  if(activePointers.size===0){resizeHandle=null;resizeStart=null;}
+}
+canvas.addEventListener("pointerup",endPointer);
+canvas.addEventListener("pointercancel",endPointer);
+
+canvas.addEventListener("wheel",e=>{
+  if(!sourceImage)return;
+  e.preventDefault();
+  const factor=e.deltaY<0?1.08:.925;
+  setZoom(zoomFactor*factor);
+},{passive:false});
+
+async function canvasBlob(canvas,type,quality){
+  return new Promise(resolve=>canvas.toBlob(resolve,type,quality));
+}
+
+async function makeBlob(outCanvas,type,quality,maxBytes){
+  let blob=await canvasBlob(outCanvas,type,quality);
+  if(!maxBytes || blob.size<=maxBytes || type==="image/png")return blob;
+  let lo=.03,hi=quality,best=null;
+  for(let i=0;i<9;i++){
+    const q=(lo+hi)/2;
+    const b=await canvasBlob(outCanvas,type,q);
+    if(b.size>maxBytes)hi=q;
+    else{best=b;lo=q;}
+  }
+  return best||blob;
+}
+
+function sizeToBytes(value,unit){
+  return unit==="MB"?value*1024*1024:value*1024;
+}
+
+$("generateBtn").addEventListener("click",async()=>{
+  if(!sourceImage)return;
+  const t=getTarget();
+  if(!(t.width>0&&t.height>0)){alert("Width/Height सही डालें।");return;}
+
+  $("generateBtn").disabled=true;
+  $("generateBtn").textContent="Processing…";
+
+  const b=cropBox();
+  const scale=baseScale*zoomFactor;
+  const imageLeft=imgX-(sourceImage.width*scale)/2;
+  const imageTop=imgY-(sourceImage.height*scale)/2;
+
+  let sx=(b.x-imageLeft)/scale;
+  let sy=(b.y-imageTop)/scale;
+  let sw=b.w/scale;
+  let sh=b.h/scale;
+
+  const x2=Math.max(0,Math.min(sourceImage.width,sx+sw));
+  const y2=Math.max(0,Math.min(sourceImage.height,sy+sh));
+  sx=Math.max(0,Math.min(sourceImage.width,sx));
+  sy=Math.max(0,Math.min(sourceImage.height,sy));
+  sw=Math.max(1,x2-sx);
+  sh=Math.max(1,y2-sy);
+
+  const out=document.createElement("canvas");
+  out.width=t.width;out.height=t.height;
+  const octx=out.getContext("2d");
+  if($("format").value==="image/jpeg"){
+    octx.fillStyle="#fff";octx.fillRect(0,0,t.width,t.height);
+  }
+  octx.imageSmoothingEnabled=true;
+  octx.imageSmoothingQuality="high";
+  octx.drawImage(sourceImage,sx,sy,sw,sh,0,0,t.width,t.height);
+
+  const type=$("format").value;
+  const quality=Number($("quality").value)/100;
+  let maxBytes=0;
+  if($("sizeMode").value!=="none"){
+    const max=Number($("maxSize").value);
+    if(max>0)maxBytes=sizeToBytes(max,$("sizeUnit").value);
+  }
+
+  finalBlob=await makeBlob(out,type,quality,maxBytes);
+  if(finalURL)URL.revokeObjectURL(finalURL);
+  finalURL=URL.createObjectURL(finalBlob);
+
+  $("finalPreview").src=finalURL;
+  $("finalPreview").hidden=false;
+  $("finalPlaceholder").hidden=true;
+  $("downloadBtn").disabled=false;
+  $("downloadAgainBtn").disabled=false;
+
+  const kb=finalBlob.size/1024,mb=kb/1024;
+  const targetMax=maxBytes?`<br><b>Target max:</b> ${(maxBytes/1024).toFixed(2)} KB`:"";
+  $("outputInfo").innerHTML=
+    `<b>Final:</b> ${t.width} × ${t.height} px<br>
+     <b>DPI:</b> ${t.dpi}<br>
+     <b>Format:</b> ${type.split("/")[1].toUpperCase()}<br>
+     <b>File size:</b> ${kb.toFixed(2)} KB (${mb.toFixed(3)} MB)${targetMax}`;
+
+  $("generateBtn").disabled=false;
+  $("generateBtn").textContent="✂️ Generate";
+});
+
+function downloadFinal(){
+  if(!finalBlob||!finalURL)return;
+  const ext=$("format").value==="image/png"?"png":$("format").value==="image/webp"?"webp":"jpg";
+  const t=getTarget();
+  const a=document.createElement("a");
+  a.href=finalURL;
+  a.download=`photo_${t.width}x${t.height}.${ext}`;
+  document.body.appendChild(a);a.click();a.remove();
+}
+$("downloadBtn").addEventListener("click",downloadFinal);
+$("downloadAgainBtn").addEventListener("click",downloadFinal);
+
+function clearPhoto(){
+  sourceImage=null;sourceFile=null;
+  if(finalURL)URL.revokeObjectURL(finalURL);
+  finalURL=null;finalBlob=null;
+  $("fileInput").value="";
+  $("originalPreview").hidden=true;
+  $("originalPlaceholder").hidden=false;
+  $("finalPreview").hidden=true;
+  $("finalPlaceholder").hidden=false;
+  $("fileInfo").textContent="";
+  $("outputInfo").textContent="No output generated.";
+  $("generateBtn").disabled=true;
+  $("downloadBtn").disabled=true;
+  $("downloadAgainBtn").disabled=true;
+  drawEditor();
+}
+$("clearBtn").addEventListener("click",clearPhoto);
+
+$("resetAllBtn").addEventListener("click",()=>{
+  frameInitialized=false; frameW=0; frameH=0;
+  clearPhoto();
+  $("preset").value="custom";
+  $("unit").value="px";
+  $("dpi").value=300;
+  $("width").value=213;
+  $("height").value=213;
+  $("sizeMode").value="none";
+  $("sizeUnit").value="KB";
+  $("minSize").value=20;
+  $("maxSize").value=50;
+  $("quality").value=90;
+  $("qualityValue").textContent="90%";
+  $("presetInfo").textContent="Custom regulation.";
+  updateTargetInfo();
+});
+
+$("quality").addEventListener("input",()=>{$("qualityValue").textContent=$("quality").value+"%"});
+
+$("preset").addEventListener("change",()=>{
+  const key=$("preset").value;
+  if(key==="custom"){
+    $("presetInfo").textContent="Custom regulation.";
+    updateTargetInfo();return;
+  }
+  const p=presets[key];
+  $("unit").value=p.unit;
+  $("width").value=p.width;
+  $("height").value=p.height;
+  $("dpi").value=p.dpi;
+  $("minSize").value=p.min;
+  $("maxSize").value=p.max||50;
+  $("sizeMode").value=p.max?(p.min?"range":"max"):"none";
+  $("sizeUnit").value="KB";
+  $("presetInfo").textContent=p.info;
+  updateTargetInfo();
+});
+
+window.addEventListener("resize",resizeCanvas);
+resizeCanvas();
+updateTargetInfo();
+</script>
+</body>
+</html>
