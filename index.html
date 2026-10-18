@@ -7,91 +7,124 @@
 <style>
 *{box-sizing:border-box}
 :root{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-body{margin:0;background:#f3f5f8;color:#17202a}
+body{margin:0;background:#050814;color:#f3f4f6}
 
-/* Header Design */
+/* --- Banner Header Design (जैसा इमेज में है) --- */
 header{
-  background:linear-gradient(135deg, #090d16 0%, #1e1b4b 50%, #0f172a 100%);
+  background: radial-gradient(circle at 50% -20%, #1e1b4b 0%, #090d1a 60%, #03050b 100%);
   color:#fff;
   text-align:center;
-  padding:22px 16px 18px;
+  padding:28px 16px 20px;
+  border-bottom: 2px solid rgba(56,189,248,0.2);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
-header h1{
+.header-top{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:16px;
+  flex-wrap:wrap;
+}
+.brand-title{
   margin:0;
-  font-size:28px;
-  font-weight:800;
+  font-size:36px;
+  font-weight:900;
   letter-spacing:-0.5px;
   display:flex;
   align-items:center;
   justify-content:center;
-  gap:10px;
+  gap:12px;
 }
-.brand-icon{
+.brand-icon-wrap{
+  background:linear-gradient(135deg, #3b82f6, #1d4ed8);
+  border:2px solid rgba(56,189,248,0.6);
+  border-radius:14px;
+  width:50px;
+  height:50px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow: 0 0 20px rgba(59,130,246,0.6);
   font-size:26px;
-  filter:drop-shadow(0 2px 10px rgba(56,189,248,0.6));
 }
 .brand-text{
-  background:linear-gradient(90deg, #38bdf8, #818cf8, #c084fc);
+  background:linear-gradient(90deg, #38bdf8 0%, #818cf8 50%, #ec4899 100%);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
-  filter:drop-shadow(0 0 18px rgba(129,140,248,0.35));
+  filter:drop-shadow(0 0 20px rgba(129,140,248,0.4));
 }
-.header-tags{
+.header-sub{
+  margin-top:8px;
+  font-size:15px;
+  font-weight:600;
+  letter-spacing:1.5px;
+  color:#94a3b8;
+}
+.header-sub span{color:#38bdf8;}
+
+/* --- Neon Feature Buttons Grid (बैनर जैसे शानदार बटंस) --- */
+.banner-badges{
   display:flex;
   flex-wrap:wrap;
   justify-content:center;
-  gap:6px;
-  margin-top:12px;
+  gap:10px;
+  max-width:850px;
+  margin:18px auto 0;
 }
-.header-badge{
-  background:rgba(255,255,255,0.08);
-  border:1px solid rgba(255,255,255,0.14);
-  color:#e2e8f0;
-  font-size:11px;
-  font-weight:600;
-  padding:4px 9px;
-  border-radius:20px;
-  letter-spacing:0.4px;
+.bbadge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 16px;
+  border-radius:30px;
+  font-size:13px;
+  font-weight:700;
+  color:#fff;
+  border:1.5px solid rgba(255,255,255,0.3);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  backdrop-filter: blur(5px);
+  cursor: default;
+  transition: transform 0.2s;
 }
+.bbadge:hover{transform:scale(1.03);}
+.bb-cm{background:linear-gradient(135deg, #0284c7, #0369a1); border-color:#38bdf8; box-shadow:0 0 15px rgba(2,132,199,0.5);}
+.bb-mm{background:linear-gradient(135deg, #7c3aed, #5b21b6); border-color:#a78bfa; box-shadow:0 0 15px rgba(124,58,237,0.5);}
+.bb-inch{background:linear-gradient(135deg, #0d9488, #0f766e); border-color:#2dd4bf; box-shadow:0 0 15px rgba(13,148,136,0.5);}
+.bb-pixel{background:linear-gradient(135deg, #d97706, #b45309); border-color:#fbbf24; box-shadow:0 0 15px rgba(217,119,6,0.5);}
+.bb-dpi{background:linear-gradient(135deg, #db2777, #be185d); border-color:#f472b6; box-shadow:0 0 15px rgba(219,39,119,0.5);}
+.bb-kb{background:linear-gradient(135deg, #2563eb, #1d4ed8); border-color:#60a5fa; box-shadow:0 0 15px rgba(37,99,235,0.5);}
+.bb-live{background:linear-gradient(135deg, #6d28d9, #4c1d95); border-color:#8b5cf6; box-shadow:0 0 15px rgba(109,40,217,0.5);}
 
-/* --- लाल लाइन वाली जगह के लिए रनिंग टेक्स्ट स्ट्रिप (Marquee) --- */
+/* --- नीचे वाली टिकर पट्टी (Ticker Strip जैसा इमेज में है) --- */
 .ticker-wrap{
   width:100%;
   overflow:hidden;
-  background:linear-gradient(90deg, #0b1120 0%, #1e1b4b 50%, #0b1120 100%);
-  border-top:1px solid rgba(255,255,255,0.08);
-  border-bottom:1px solid rgba(56,189,248,0.3);
-  padding:8px 0;
-  box-shadow:0 4px 12px rgba(0,0,0,0.15);
+  background:linear-gradient(90deg, #030712 0%, #0f172a 50%, #030712 100%);
+  border-top:2px solid rgba(56,189,248,0.3);
+  border-bottom:2px solid rgba(56,189,248,0.3);
+  padding:10px 0;
+  margin-top:16px;
+  box-shadow:inset 0 0 15px rgba(0,0,0,0.6);
 }
 .ticker-content{
   display:inline-flex;
   white-space:nowrap;
-  animation:runTicker 18s linear infinite;
-  gap:20px;
+  animation:runTicker 20s linear infinite;
+  gap:30px;
 }
 .ticker-item{
   display:inline-flex;
   align-items:center;
-  gap:8px;
-  font-size:13px;
+  gap:10px;
+  font-size:14px;
   font-weight:700;
-  letter-spacing:0.4px;
-  color:#e0e7ff;
+  color:#f1f5f9;
 }
-.ticker-en{
-  background:linear-gradient(90deg, #38bdf8, #818cf8);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-}
-.ticker-hi{
-  background:linear-gradient(90deg, #f472b6, #c084fc);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-}
-.ticker-sep{
-  color:#64748b;
-  font-size:11px;
+.ticker-brand{
+  color:#38bdf8;
+  display:flex;
+  align-items:center;
+  gap:6px;
 }
 @keyframes runTicker{
   0%{transform:translateX(0)}
@@ -99,92 +132,95 @@ header h1{
 }
 
 .container{max-width:1050px;margin:auto;padding:16px}
-.card{background:#fff;border-radius:16px;padding:17px;margin-bottom:15px;box-shadow:0 4px 18px rgba(0,0,0,.07)}
-h2{font-size:18px;margin:0 0 14px}
+.card{background:#ffffff;color:#17202a;border-radius:16px;padding:17px;margin-bottom:15px;box-shadow:0 4px 18px rgba(0,0,0,.15)}
+h2{font-size:18px;margin:0 0 14px;color:#0f172a}
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 @media(max-width:680px){.grid{grid-template-columns:1fr}}
-label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
-input,select,button{width:100%;min-height:44px;border:1px solid #d1d5db;border-radius:9px;padding:10px 12px;font-size:15px;background:#fff}
+label{display:block;font-size:13px;font-weight:700;margin-bottom:6px;color:#334155}
+input,select,button{width:100%;min-height:44px;border:1px solid #d1d5db;border-radius:9px;padding:10px 12px;font-size:15px;background:#fff;color:#111827}
 input[type=range]{padding:0}
 button{border:0;font-weight:700;cursor:pointer}
 button:disabled{opacity:.5;cursor:not-allowed}
 .primary{background:#2563eb;color:#fff}.success{background:#16a34a;color:#fff}.dark{background:#111827;color:#fff}.gray{background:#e5e7eb;color:#111827}
 .drop{position:relative;display:block;border:2px dashed #94a3b8;border-radius:14px;padding:32px 14px;text-align:center;background:#f8fafc;cursor:pointer;overflow:hidden;touch-action:manipulation}.drop input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:5}.drop strong,.drop span{position:relative;z-index:1;pointer-events:none}
-.drop strong{display:block;font-size:17px}.drop span{display:block;margin-top:5px;color:#64748b;font-size:13px}
-.info{background:#eff6ff;border-left:4px solid #2563eb;padding:11px;border-radius:7px;font-size:13px;line-height:1.6}
-.warning{background:#fff7ed;border-left:4px solid #f97316;padding:11px;border-radius:7px;font-size:13px;line-height:1.55}
-.result{background:#f8fafc;border-radius:10px;padding:12px;font-size:14px;line-height:1.75}
+.drop strong{display:block;font-size:17px;color:#1e293b}.drop span{display:block;margin-top:5px;color:#64748b;font-size:13px}
+.info{background:#eff6ff;border-left:4px solid #2563eb;padding:11px;border-radius:7px;font-size:13px;line-height:1.6;color:#1e3a8a}
+.warning{background:#fff7ed;border-left:4px solid #f97316;padding:11px;border-radius:7px;font-size:13px;line-height:1.55;color:#7c2d12}
+.result{background:#f8fafc;border-radius:10px;padding:12px;font-size:14px;line-height:1.75;color:#0f172a}
 .small{font-size:12px;color:#64748b;margin-top:6px}
-.checkbox{display:flex;align-items:center;gap:8px;margin-top:11px}.checkbox input{width:auto;min-height:auto}
+.checkbox{display:flex;align-items:center;gap:8px;margin-top:11px;color:#334155}.checkbox input{width:auto;min-height:auto}
 .crop-shell{background:#090d13;border-radius:14px;padding:10px;overflow:hidden}
 #cropCanvas{display:block;width:100%;height:min(70vh,560px);min-height:300px;background:#111827;border-radius:10px;touch-action:none;user-select:none;cursor:grab}
 #cropCanvas:active{cursor:grabbing}
 .crop-help{text-align:center;color:#cbd5e1;font-size:12px;padding:7px 3px 1px}
-.control{display:flex;align-items:center;gap:10px}.control strong{min-width:55px;text-align:right}
+.control{display:flex;align-items:center;gap:10px}.control strong{min-width:55px;text-align:right;color:#334155}
 .actions{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
-@media(max-width:650px){.actions{grid-template-columns:repeat(2,1fr)}}
+.actions-3{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+@media(max-width:650px){.actions{grid-template-columns:repeat(2,1fr)}.actions-3{grid-template-columns:repeat(3,1fr)}}
 .preview-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:680px){.preview-grid{grid-template-columns:1fr}}
 .preview{min-height:230px;background:#eef2f7;border-radius:12px;display:flex;align-items:center;justify-content:center;padding:10px;overflow:hidden}
 .preview img{max-width:100%;max-height:350px;object-fit:contain}
 .placeholder{color:#64748b;font-size:14px;text-align:center}
-footer{text-align:center;padding:24px;color:#64748b;font-size:12px}
-.invalid{border-color:#dc2626!important;background:#fff7f7}
+footer{text-align:center;padding:24px;color:#94a3b8;font-size:12px}
 </style>
 </head>
 <body>
 
 <header>
-  <h1>
-    <span class="brand-icon">⚡</span>
-    <span class="brand-text">Smart Crop</span>
-  </h1>
-  <div class="header-tags">
-    <span class="header-badge">CM</span>
-    <span class="header-badge">MM</span>
-    <span class="header-badge">INCH</span>
-    <span class="header-badge">PIXEL</span>
-    <span class="header-badge">DPI</span>
-    <span class="header-badge">Exact KB / MB</span>
-    <span class="header-badge">Live Crop</span>
+  <div class="header-top">
+    <h1 class="brand-title">
+      <span class="brand-icon-wrap">⚡</span>
+      <span class="brand-text">Smart Crop</span>
+    </h1>
+  </div>
+  <div class="header-sub">
+    <span>Crop</span> &nbsp;•&nbsp; <span>Resize</span> &nbsp;•&nbsp; <span>Convert</span> &nbsp;•&nbsp; <span>Edit</span>
+  </div>
+
+  <!-- बैनर जैसे नियॉन बटंस -->
+  <div class="banner-badges">
+    <div class="bbadge bb-cm">📐 CM <span style="font-size:11px;opacity:0.8">(Centimeter)</span></div>
+    <div class="bbadge bb-mm">📏 MM <span style="font-size:11px;opacity:0.8">(Millimeter)</span></div>
+    <div class="bbadge bb-inch">🔲 INCH <span style="font-size:11px;opacity:0.8">(Inch)</span></div>
+    <div class="bbadge bb-pixel">🖨️ PIXEL <span style="font-size:11px;opacity:0.8">(Pixels)</span></div>
+    <div class="bbadge bb-dpi">🎯 DPI <span style="font-size:11px;opacity:0.8">(Resolution)</span></div>
+    <div class="bbadge bb-kb">💾 Exact KB / MB <span style="font-size:11px;opacity:0.8">(File Size)</span></div>
+    <div class="bbadge bb-live">✂️ Live Crop <span style="font-size:11px;opacity:0.8">(Real Time)</span></div>
   </div>
 </header>
 
-<!-- लाल लाइन की जगह पर चलती हुई टेक्स्ट पट्टी -->
+<!-- नीचे चलती हुई टिकर पट्टी (Ticker) -->
 <div class="ticker-wrap">
   <div class="ticker-content">
     <div class="ticker-item">
+      <span class="ticker-brand">⚡ Smart Crop</span>
+      <span>•</span>
+      <span>आपका स्वागत है Smart Crop में ✨</span>
+      <span>🌟</span>
+      <span style="color:#f472b6">Work Smart Not Hard</span>
       <span>🚗</span>
-      <span class="ticker-en">Welcome to Smart Crop</span>
-      <span class="ticker-sep">•</span>
-      <span class="ticker-hi">आपका स्वागत है Smart Crop में</span>
-      <span>✨</span>
     </div>
     <div class="ticker-item">
-      <span>⚡</span>
-      <span class="ticker-en">Welcome to Smart Crop</span>
-      <span class="ticker-sep">•</span>
-      <span class="ticker-hi">आपका स्वागत है Smart Crop में</span>
-      <span>✨</span>
-    </div>
-    <div class="ticker-item">
+      <span class="ticker-brand">⚡ Smart Crop</span>
+      <span>•</span>
+      <span>आपका स्वागत है Smart Crop में ✨</span>
+      <span>🌟</span>
+      <span style="color:#f472b6">Work Smart Not Hard</span>
       <span>🚗</span>
-      <span class="ticker-en">Welcome to Smart Crop</span>
-      <span class="ticker-sep">•</span>
-      <span class="ticker-hi">आपका स्वागत है Smart Crop में</span>
-      <span>✨</span>
     </div>
     <div class="ticker-item">
-      <span>⚡</span>
-      <span class="ticker-en">Welcome to Smart Crop</span>
-      <span class="ticker-sep">•</span>
-      <span class="ticker-hi">आपका स्वागत है Smart Crop में</span>
-      <span>✨</span>
+      <span class="ticker-brand">⚡ Smart Crop</span>
+      <span>•</span>
+      <span>आपका स्वागत है Smart Crop में ✨</span>
+      <span>🌟</span>
+      <span style="color:#f472b6">Work Smart Not Hard</span>
+      <span>🚗</span>
     </div>
   </div>
 </div>
 
-<div class="container">
+<div class="container" style="margin-top:20px;">
 
 <div class="card">
   <h2>1. Photo Upload</h2>
@@ -197,7 +233,38 @@ footer{text-align:center;padding:24px;color:#64748b;font-size:12px}
 </div>
 
 <div class="card">
-  <h2>2. Regulation / Preset</h2>
+  <h2>2. Live Crop & Adjust</h2>
+  <div class="info">
+    <b>फोटो crop box के अंदर दिखाई देगी।</b><br>
+    उंगली/माउस से photo को drag करें। Zoom slider से photo को बड़ा/छोटा करें।
+    White frame के अंदर दिखने वाला हिस्सा final image में जाएगा।
+  </div>
+  <div class="crop-shell" style="margin-top:12px">
+    <canvas id="cropCanvas"></canvas>
+    <div class="crop-help">👆 Photo Drag • 🔍 Zoom • ⛶ Crop frame के किनारे/कोने Drag करके खुद Size Adjust करें</div>
+    <div class="checkbox" style="margin:8px 4px 2px;color:#e2e8f0">
+      <input id="freeCrop" type="checkbox" checked>
+      <label for="freeCrop" style="color:#e2e8f0">Free Crop Frame — Width/Height ratio को manually बदलने दें</label>
+    </div>
+  </div>
+
+  <div style="margin-top:13px">
+    <label>🔍 Zoom</label>
+    <div class="control">
+      <input id="zoom" type="range" min="0.10" max="5" step="0.01" value="1">
+      <strong id="zoomValue">100%</strong>
+    </div>
+  </div>
+
+  <div class="actions-3" style="margin-top:12px">
+    <button id="fitBtn" class="gray">↔️ Fit</button>
+    <button id="centerBtn" class="gray">🎯 Center</button>
+    <button id="resetBtn" class="gray">🔄 Reset</button>
+  </div>
+</div>
+
+<div class="card">
+  <h2>3. Regulation / Preset</h2>
   <div class="grid">
     <div>
       <label>Preset</label>
@@ -225,7 +292,7 @@ footer{text-align:center;padding:24px;color:#64748b;font-size:12px}
 </div>
 
 <div class="card">
-  <h2>3. Exact Width × Height</h2>
+  <h2>4. Exact Width × Height</h2>
   <div class="grid">
     <div>
       <label>Unit</label>
@@ -257,38 +324,6 @@ footer{text-align:center;padding:24px;color:#64748b;font-size:12px}
 </div>
 
 <div class="card">
-  <h2>4. Live Crop & Adjust</h2>
-  <div class="info">
-    <b>फोटो crop box के अंदर दिखाई देगी।</b><br>
-    उंगली/माउस से photo को drag करें। Zoom slider से photo को बड़ा/छोटा करें।
-    White frame के अंदर दिखने वाला हिस्सा final image में जाएगा।
-  </div>
-  <div class="crop-shell" style="margin-top:12px">
-    <canvas id="cropCanvas"></canvas>
-    <div class="crop-help">👆 Photo Drag • 🔍 Zoom • ⛶ Crop frame के किनारे/कोने Drag करके खुद Size Adjust करें</div>
-    <div class="checkbox" style="margin:8px 4px 2px;color:#e2e8f0">
-      <input id="freeCrop" type="checkbox" checked>
-      <label for="freeCrop" style="color:#e2e8f0">Free Crop Frame — Width/Height ratio को manually बदलने दें</label>
-    </div>
-  </div>
-
-  <div style="margin-top:13px">
-    <label>🔍 Zoom</label>
-    <div class="control">
-      <input id="zoom" type="range" min="0.10" max="5" step="0.01" value="1">
-      <strong id="zoomValue">100%</strong>
-    </div>
-  </div>
-
-  <div class="actions" style="margin-top:12px">
-    <button id="fitBtn" class="gray">↔️ Fit</button>
-    <button id="centerBtn" class="gray">🎯 Center</button>
-    <button id="resetBtn" class="gray">🔄 Reset</button>
-    <button id="generateBtn" class="primary" disabled>✂️ Generate</button>
-  </div>
-</div>
-
-<div class="card">
   <h2>5. File Size Regulation (Exact KB / MB)</h2>
   <div class="grid">
     <div>
@@ -313,6 +348,9 @@ footer{text-align:center;padding:24px;color:#64748b;font-size:12px}
   <div class="control">
     <input id="quality" type="range" min="10" max="100" value="90">
     <strong id="qualityValue">90%</strong>
+  </div>
+  <div style="margin-top:14px">
+    <button id="generateBtn" class="primary" disabled style="min-height:48px;font-size:16px">✂️ Generate Final Photo</button>
   </div>
 </div>
 
@@ -1016,7 +1054,7 @@ $("generateBtn").addEventListener("click",async()=>{
      <b>Target Exact:</b> ${exactVal} ${sUnit} (${exactBytes.toLocaleString()} Bytes) ✅`;
 
   $("generateBtn").disabled=false;
-  $("generateBtn").textContent="✂️ Generate";
+  $("generateBtn").textContent="✂️ Generate Final Photo";
 });
 
 function downloadFinal(){
