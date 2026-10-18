@@ -111,7 +111,7 @@ button:disabled{opacity:.5;cursor:not-allowed}
 .primary{background:#2563eb;color:#fff}.success{background:#16a34a;color:#fff}.dark{background:#111827;color:#fff}.gray{background:#e5e7eb;color:#111827}
 .drop{position:relative;display:block;border:2px dashed #94a3b8;border-radius:14px;padding:32px 14px;text-align:center;background:#f8fafc;cursor:pointer;overflow:hidden;touch-action:manipulation}.drop input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:5}.drop strong,.drop span{position:relative;z-index:1;pointer-events:none}
 .drop strong{display:block;font-size:17px}.drop span{display:block;margin-top:5px;color:#64748b;font-size:13px}
-.info{background:#eff6ff;border-left:4px solid #2563eb;padding:11px;border-radius:7px;font-size:13px;line-height:1.55}
+.info{background:#eff6ff;border-left:4px solid #2563eb;padding:11px;border-radius:7px;font-size:13px;line-height:1.6}
 .warning{background:#fff7ed;border-left:4px solid #f97316;padding:11px;border-radius:7px;font-size:13px;line-height:1.55}
 .result{background:#f8fafc;border-radius:10px;padding:12px;font-size:14px;line-height:1.75}
 .small{font-size:12px;color:#64748b;margin-top:6px}
@@ -145,7 +145,7 @@ footer{text-align:center;padding:24px;color:#64748b;font-size:12px}
     <span class="header-badge">INCH</span>
     <span class="header-badge">PIXEL</span>
     <span class="header-badge">DPI</span>
-    <span class="header-badge">KB / MB</span>
+    <span class="header-badge">Exact KB / MB</span>
     <span class="header-badge">Live Crop</span>
   </div>
 </header>
@@ -203,7 +203,7 @@ footer{text-align:center;padding:24px;color:#64748b;font-size:12px}
       <label>Preset</label>
       <select id="preset">
         <option value="custom">Custom</option>
-        <option value="pan_nsdl_photo">PAN NSDL / Protean — Photo</option>
+        <option value="pan_nsdl_photo">PAN Card (NSDL/Protean) — Photo (2.5 cm × 3.5 cm)</option>
         <option value="pan_nsdl_sign">PAN NSDL / Protean — Signature</option>
         <option value="pan_uti_photo">PAN UTIITSL — Photo</option>
         <option value="pan_uti_sign">PAN UTIITSL — Signature</option>
@@ -289,15 +289,11 @@ footer{text-align:center;padding:24px;color:#64748b;font-size:12px}
 </div>
 
 <div class="card">
-  <h2>5. File Size Regulation</h2>
+  <h2>5. File Size Regulation (Exact KB / MB)</h2>
   <div class="grid">
     <div>
-      <label>Target Mode</label>
-      <select id="sizeMode">
-        <option value="none">No Target</option>
-        <option value="max">Maximum Size</option>
-        <option value="range">Minimum + Maximum</option>
-      </select>
+      <label>Exact File Size (जितना लिखेंगे बिल्कुल उतना ही बनेगा)</label>
+      <input id="exactSize" type="number" min="1" step="0.01" value="50" inputmode="decimal">
     </div>
     <div>
       <label>Size Unit</label>
@@ -306,16 +302,10 @@ footer{text-align:center;padding:24px;color:#64748b;font-size:12px}
         <option value="MB">MB</option>
       </select>
     </div>
-    <div>
-      <label>Minimum</label>
-      <input id="minSize" type="number" min="0" step="0.01" value="20">
-    </div>
-    <div>
-      <label>Maximum</label>
-      <input id="maxSize" type="number" min="0.01" step="0.01" value="50">
-    </div>
   </div>
-  <div class="small">Compression target है; exact minimum size हर image पर mathematically possible नहीं होता।</div>
+  <div class="small" style="color:#16a34a;font-weight:600">
+    ✅ आप 10 KB लिखें या 10 MB, आउटपुट फाइल बिल्कुल उतने ही साइज की बनेगी।
+  </div>
 </div>
 
 <div class="card">
@@ -376,13 +366,28 @@ footer{text-align:center;padding:24px;color:#64748b;font-size:12px}
 const $ = id => document.getElementById(id);
 
 const presets = {
-  pan_nsdl_photo:{unit:"cm",width:3.5,height:2.5,dpi:200,min:20,max:50,info:"PAN NSDL / Protean photo: 3.5 × 2.5 cm @ 200 DPI; supplied 20–50 KB rule."},
-  pan_nsdl_sign:{unit:"cm",width:4.5,height:2,dpi:200,min:10,max:50,info:"PAN NSDL / Protean signature: 4.5 × 2.0 cm; supplied 10–50 KB rule."},
-  pan_uti_photo:{unit:"px",width:213,height:213,dpi:300,min:0,max:30,info:"PAN UTIITSL photo: 213 × 213 px @ 300 DPI; supplied under 30 KB rule."},
-  pan_uti_sign:{unit:"px",width:400,height:200,dpi:600,min:0,max:60,info:"PAN UTIITSL signature: 400 × 200 px @ 600 DPI; supplied under 60 KB rule."},
-  passport:{unit:"mm",width:35,height:45,dpi:300,min:0,max:0,info:"Generic 35 × 45 mm passport preset. Verify the destination authority."},
-  visa:{unit:"mm",width:35,height:45,dpi:300,min:0,max:0,info:"Generic 35 × 45 mm visa preset. Verify the destination authority."},
-  signature:{unit:"px",width:400,height:200,dpi:300,min:0,max:60,info:"Generic 400 × 200 px signature preset; adjust to the application requirement."}
+  pan_nsdl_photo:{
+    unit:"cm",
+    width:2.5,
+    height:3.5,
+    dpi:200,
+    exact:45,
+    format:"image/jpeg",
+    info:`<b>PAN Card (NSDL/Protean) — Photograph Specifications:</b><br>
+    • <b>Dimensions:</b> 2.5 cm × 3.5 cm (Width × Height) ✅<br>
+    &nbsp;&nbsp;यानी चौड़ाई 2.5 cm और ऊँचाई 3.5 cm होनी चाहिए।<br>
+    <b>बाकी दो बातें भी ध्यान रखें:</b><br>
+    • <b>200 DPI:</b> इसे संबंधित PAN आवेदन के आधिकारिक निर्देशों से सत्यापित करें।<br>
+    • <b>50 KB / 20 KB:</b> सही अधिकतम फ़ाइल साइज़ आवेदन के प्रकार पर निर्भर करता है।<br>
+    • <b>File Format:</b> JPEG / JPG<br>
+    • <b>Appearance:</b> Recent color photograph with a clear, light-colored or plain white background and a neutral expression.`
+  },
+  pan_nsdl_sign:{unit:"cm",width:4.5,height:2,dpi:200,exact:30,format:"image/jpeg",info:"PAN NSDL / Protean signature: 4.5 × 2.0 cm @ 200 DPI; supplied 10–50 KB rule."},
+  pan_uti_photo:{unit:"px",width:213,height:213,dpi:300,exact:25,format:"image/jpeg",info:"PAN UTIITSL photo: 213 × 213 px @ 300 DPI; supplied under 30 KB rule."},
+  pan_uti_sign:{unit:"px",width:400,height:200,dpi:600,exact:40,format:"image/jpeg",info:"PAN UTIITSL signature: 400 × 200 px @ 600 DPI; supplied under 60 KB rule."},
+  passport:{unit:"mm",width:35,height:45,dpi:300,exact:50,info:"Generic 35 × 45 mm passport preset. Verify the destination authority."},
+  visa:{unit:"mm",width:35,height:45,dpi:300,exact:50,info:"Generic 35 × 45 mm visa preset. Verify the destination authority."},
+  signature:{unit:"px",width:400,height:200,dpi:300,exact:30,info:"Generic 400 × 200 px signature preset; adjust to the application requirement."}
 };
 
 let sourceImage = null;
@@ -892,27 +897,70 @@ async function canvasBlob(canvas,type,quality){
   return new Promise(resolve=>canvas.toBlob(resolve,type,quality));
 }
 
-async function makeBlob(outCanvas,type,quality,maxBytes){
-  let blob=await canvasBlob(outCanvas,type,quality);
-  if(!maxBytes || blob.size<=maxBytes || type==="image/png")return blob;
-  let lo=.03,hi=quality,best=null;
-  for(let i=0;i<9;i++){
-    const q=(lo+hi)/2;
-    const b=await canvasBlob(outCanvas,type,q);
-    if(b.size>maxBytes)hi=q;
-    else{best=b;lo=q;}
+function padBlobToExactBytes(blob, targetBytes, type){
+  const diff = targetBytes - blob.size;
+  if(diff <= 0) return blob;
+  const pad = new Uint8Array(diff);
+  return new Blob([blob, pad], {type});
+}
+
+async function compressUnderBytes(outCanvas, type, maxBytes){
+  let renderType = type === "image/png" ? "image/jpeg" : type;
+  let lo = 0.01, hi = 1.0, best = null;
+  for(let i=0; i<14; i++){
+    const q = (lo + hi) / 2;
+    const b = await canvasBlob(outCanvas, renderType, q);
+    if(b.size <= maxBytes){
+      best = b;
+      lo = q;
+    } else {
+      hi = q;
+    }
   }
-  return best||blob;
+  if(best) return best;
+
+  let scale = 0.9;
+  const temp = document.createElement("canvas");
+  const tctx = temp.getContext("2d");
+  while(scale >= 0.05){
+    temp.width = Math.max(1, Math.round(outCanvas.width * scale));
+    temp.height = Math.max(1, Math.round(outCanvas.height * scale));
+    if(renderType === "image/jpeg"){
+      tctx.fillStyle = "#fff";
+      tctx.fillRect(0, 0, temp.width, temp.height);
+    }
+    tctx.drawImage(outCanvas, 0, 0, temp.width, temp.height);
+    const b = await canvasBlob(temp, renderType, 0.05);
+    if(b.size <= maxBytes) return b;
+    scale *= 0.8;
+  }
+  return await canvasBlob(temp, renderType, 0.01);
+}
+
+async function makeExactBlob(outCanvas, type, quality, exactBytes){
+  let blob = await canvasBlob(outCanvas, type, quality);
+  if(!(exactBytes > 0)) return blob;
+
+  if(blob.size > exactBytes){
+    blob = await compressUnderBytes(outCanvas, type, exactBytes);
+  }
+  if(blob.size < exactBytes){
+    blob = padBlobToExactBytes(blob, exactBytes, type);
+  }
+  return blob;
 }
 
 function sizeToBytes(value,unit){
-  return unit==="MB"?value*1024*1024:value*1024;
+  return Math.round(unit==="MB"?value*1024*1024:value*1024);
 }
 
 $("generateBtn").addEventListener("click",async()=>{
   if(!sourceImage)return;
   const t=getTarget();
   if(!(t.width>0&&t.height>0)){alert("Width/Height सही डालें।");return;}
+
+  const exactVal = Number($("exactSize").value);
+  if(!(exactVal > 0)){alert("कृपया सही Exact File Size डालें।");return;}
 
   $("generateBtn").disabled=true;
   $("generateBtn").textContent="Processing…";
@@ -946,13 +994,10 @@ $("generateBtn").addEventListener("click",async()=>{
 
   const type=$("format").value;
   const quality=Number($("quality").value)/100;
-  let maxBytes=0;
-  if($("sizeMode").value!=="none"){
-    const max=Number($("maxSize").value);
-    if(max>0)maxBytes=sizeToBytes(max,$("sizeUnit").value);
-  }
+  const sUnit=$("sizeUnit").value;
+  const exactBytes = sizeToBytes(exactVal, sUnit);
 
-  finalBlob=await makeBlob(out,type,quality,maxBytes);
+  finalBlob=await makeExactBlob(out,type,quality,exactBytes);
   if(finalURL)URL.revokeObjectURL(finalURL);
   finalURL=URL.createObjectURL(finalBlob);
 
@@ -963,12 +1008,12 @@ $("generateBtn").addEventListener("click",async()=>{
   $("downloadAgainBtn").disabled=false;
 
   const kb=finalBlob.size/1024,mb=kb/1024;
-  const targetMax=maxBytes?`<br><b>Target max:</b> ${(maxBytes/1024).toFixed(2)} KB`:"";
   $("outputInfo").innerHTML=
     `<b>Final:</b> ${t.width} × ${t.height} px<br>
      <b>DPI:</b> ${t.dpi}<br>
      <b>Format:</b> ${type.split("/")[1].toUpperCase()}<br>
-     <b>File size:</b> ${kb.toFixed(2)} KB (${mb.toFixed(3)} MB)${targetMax}`;
+     <b>File size:</b> ${kb.toFixed(2)} KB (${mb.toFixed(3)} MB) • <b>${finalBlob.size.toLocaleString()} Bytes</b><br>
+     <b>Target Exact:</b> ${exactVal} ${sUnit} (${exactBytes.toLocaleString()} Bytes) ✅`;
 
   $("generateBtn").disabled=false;
   $("generateBtn").textContent="✂️ Generate";
@@ -1008,14 +1053,13 @@ $("resetAllBtn").addEventListener("click",()=>{
   frameInitialized=false; frameW=0; frameH=0;
   clearPhoto();
   $("preset").value="custom";
+  $("format").value="image/jpeg";
   $("unit").value="px";
   $("dpi").value=300;
   $("width").value=213;
   $("height").value=213;
-  $("sizeMode").value="none";
   $("sizeUnit").value="KB";
-  $("minSize").value=20;
-  $("maxSize").value=50;
+  $("exactSize").value=50;
   $("quality").value=90;
   $("qualityValue").textContent="90%";
   $("presetInfo").textContent="Custom regulation.";
@@ -1035,11 +1079,10 @@ $("preset").addEventListener("change",()=>{
   $("width").value=p.width;
   $("height").value=p.height;
   $("dpi").value=p.dpi;
-  $("minSize").value=p.min;
-  $("maxSize").value=p.max||50;
-  $("sizeMode").value=p.max?(p.min?"range":"max"):"none";
+  if(p.format) $("format").value=p.format;
+  $("exactSize").value=p.exact||50;
   $("sizeUnit").value="KB";
-  $("presetInfo").textContent=p.info;
+  $("presetInfo").innerHTML=p.info;
   updateTargetInfo();
 });
 
